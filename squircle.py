@@ -16,8 +16,6 @@ class Squircle:
         squircle_dict = asdict(self)
         squircle_data_json = json.dumps({key:squircle_dict[key] for key in squircle_dict if (key!="data")})
 
-        print("json data:", squircle_data_json)
-
         filename_path = Path(filename)
         with open(str(filename_path.with_suffix(".json")), "w") as file:
             file.write(squircle_data_json)
