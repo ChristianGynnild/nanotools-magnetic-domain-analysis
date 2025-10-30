@@ -11,6 +11,7 @@ class Squircle:
     index: int
     squircle_factor: int
     data: np.ndarray
+    pixel_size:float
 
     def serialize(self, filename:str):
         squircle_dict = asdict(self)
