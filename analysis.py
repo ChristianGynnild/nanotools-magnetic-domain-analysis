@@ -3,6 +3,9 @@ import squircle
 from pathlib import Path
 from squircle import Squircle
 import matplotlib.pyplot as plt
+from angle_calculator import compute_angle_difference
+from numpy.fft import fft, fftfreq
+
 
 SQUIRCLE_DATA_FOLDER = Path("data/magnetic-data")
 
@@ -11,7 +14,10 @@ def amount_of_domains(magnetic_data:np.ndarray):
     return np.sum(magnetic_data)
 
 def deviation_to_vortex(magnetic_data:np.ndarray):
-    return np.sum(magnetic_data)
+    plot_angles, plot_values, rms_angle, dangle_map, centers = compute_angle_difference(magnetic_data, real_data=True)
+    return np.sum(np.abs(plot_angles))
+    #return np.sum(magnetic_data)
+
 
 squircles = squircle.load_squircles(str(SQUIRCLE_DATA_FOLDER))
 squircles.sort(key=lambda squircle_object:squircle_object.width_nm)
@@ -49,4 +55,19 @@ def plot_squircle_function(func, name):
     fig.savefig("plot.png")
 
 
-plot_squircle_function(amount_of_domains, "total magnetism [M]")
+def get_frequency_signal(signal, length):
+    N = len(signal)
+    T = length / N
+
+    yf = fft(signal)
+    xf = fftfreq(N, T)[:N//2]
+
+    frequency = xf[np.argmax(np.abs(yf))]
+
+    return frequency
+
+
+if __name__ == "__main__":
+    plot_squircle_function(deviation_to_vortex, "Deviation to vortex")
+
+
