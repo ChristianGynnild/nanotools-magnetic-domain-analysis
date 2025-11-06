@@ -5,12 +5,31 @@ import numpy as np
 from dataclasses import dataclass
 import json
 from functools import cached_property
+import os
 
 def lerp(a,b,x):
     return a*(1-x) + b*(x)
 
 size_of_picture = 40
 
+def absoluteFilePaths(directory:str):
+    # Credits: https://stackoverflow.com/questions/9816816/get-absolute-paths-of-all-files-in-a-directory
+    for dirpath,_,filenames in os.walk(directory):
+        for f in filenames:
+            yield os.path.abspath(os.path.join(dirpath, f))
+
+def load_squircles(directory:str):
+    filepaths = absoluteFilePaths(directory)
+
+    squircles: list[Squircle] = []
+
+    for filepath in filepaths:
+        filepath = Path(filepath)
+        if filepath.suffix == ".npy":
+            squircle_object = deserialize(str(filepath.with_suffix('')))
+            squircles.append(squircle_object)
+    
+    return squircles
 
 @dataclass
 class Squircle:
