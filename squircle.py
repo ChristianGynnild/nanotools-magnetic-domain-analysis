@@ -4,6 +4,7 @@ import json
 import numpy as np
 from dataclasses import dataclass
 import json
+from functools import cached_property
 
 def lerp(a,b,x):
     return a*(1-x) + b*(x)
@@ -31,11 +32,11 @@ class Squircle:
         with open(str(filename_path.with_suffix(".npy")), "wb") as file:
             np.save(file, self.data, allow_pickle=False)
 
-    @property
+    @cached_property
     def width_pixels(self):
         return self.width_nm/(self.pixel_size*1000)
 
-    @property
+    @cached_property
     def mask(self):
         """
         Produces an ellipse. Radius changes with N as radius =  N+7 and rotation as rotation=k*10 degrees
@@ -60,7 +61,7 @@ class Squircle:
         )
         return pixels
     
-    @property
+    @cached_property
     def data_masked(self):
         data_x = self.mask*self.data[:,:,0]
         data_y = self.mask*self.data[:,:,1]
