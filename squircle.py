@@ -33,9 +33,10 @@ class Squircle:
 
     @property
     def width_pixels(self):
-        return self.width_nm/self.pixel_size
+        return self.width_nm/(self.pixel_size*1000)
 
-    def get_squircle_mask(self):
+    @property
+    def mask(self):
         """
         Produces an ellipse. Radius changes with N as radius =  N+7 and rotation as rotation=k*10 degrees
         """
@@ -59,9 +60,11 @@ class Squircle:
         )
         return pixels
     
-    def get_masked_data(self):
-        pass
-
+    @property
+    def data_masked(self):
+        data_x = self.mask*self.data[:,:,0]
+        data_y = self.mask*self.data[:,:,1]
+        return np.dstack((data_x,data_y))
 
 def deserialize(filename):
     filename_path = Path(filename)
